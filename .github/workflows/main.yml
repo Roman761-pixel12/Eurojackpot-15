@@ -1,4 +1,5 @@
-name: Build EuroJackpot APK
+
+name: EuroJackpot APK erstellen
 
 on:
   workflow_dispatch:
@@ -6,25 +7,28 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
+      - name: Projekt herunterladen
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Java einrichten
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
-      - name: Build Debug APK
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+      - name: Gradle einrichten
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
 
-      - name: Upload APK
+      - name: APK bauen
+        working-directory: EuroJackpotPrognose
+        run: gradle assembleDebug
+
+      - name: APK bereitstellen
         uses: actions/upload-artifact@v4
         with:
           name: EuroJackpot-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: EuroJackpotPrognose/app/build/outputs/apk/debug/*.apk
           
